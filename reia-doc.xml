@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?oxygen RNGSchema="http://www.oasis-open.org/docbook/xml/5.0/rng/docbook.rng" type="xml"?>
+<book xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink" version="5.0">
+    <info>
+        <title>Reia Reference Guide</title>
+        <author>
+            <orgname>Walton Hoops</orgname>
+            <email>me@waltonhoops.com</email>
+        </author>
+    </info>
+    <part>
+        <title>Reference</title>
+        <chapter>
+            <title>Getting Started</title>
+            <sect1>
+                <title>What You Need Before Getting Started</title>
+                <para>As of this writing, this text only describes installing and using Reia under
+                    Linux.  It is assumed that you already know how to find and install software on
+                    your choosen Linux distribution both through your distributions package manager
+                    and from source.  It is also assumed that you are somewhat confortable with
+                    tools such as Git and Rake and will be able to do some basic troubleshooting if
+                    things don't work quite as expected.  If any of this does not describe you, you
+                    should probably expect to have a harder time following along.</para>
+            </sect1>
+            <sect1>
+                <title>Installation</title>
+                <para>As it is still in the early stages of development, installing Reia is not
+                    quite as smooth as many more mature languages which can be installed directly
+                    from your package manager. In order to install Reia you are first going to need
+                    to compile it from source. To do that, your going to need a few basic components:<itemizedlist>
+                        <listitem>
+                            <para>Erlang R12B-3 or greater</para>
+                        </listitem>
+                        <listitem>
+                            <para>Ruby 1.8.7 or greater with Rake</para>
+                        </listitem>
+                        <listitem>
+                            <para>Git</para>
+                        </listitem>
+                    </itemizedlist> First, we'll need to checkout the <link
+                        xlink:href="https://github.com/tarcieri/reia">GitHub repository</link>. To
+                    do so run:
+                    <screen><command>git clone https://github.com/tarcieri/reia.git</command></screen>your
+                    output should look something
+                    like:<programlisting>Cloning into reia...
+remote: Counting objects: 8727, done.
+remote: Compressing objects: 100% (3343/3343), done.
+remote: Total 8727 (delta 5380), reused 8590 (delta 5296)
+Receiving objects: 100% (8727/8727), 7.25 MiB | 759 KiB/s, done.
+Resolving deltas: 100% (5380/5380), done.</programlisting>Great!
+                    Now change to the newly created directory. It should look something like:
+                    <programlisting><textobject><textdata fileref="listings/reia-dir.txt"/></textobject></programlisting>If
+                    all is well you should now be able to build Reia itself. To do so simply
+                    run:<screen><command>rake</command></screen>This both builds Reia and runs the
+                    test suite. A successful build will look like
+                    so:<programlisting><textobject><textdata fileref="listings/reia-build.txt"/></textobject></programlisting>If
+                    there are errors reported during the build you will probaby want to ask around
+                    on the Reia Google Group to find out what the problem is. Lastly, in order to
+                    install Reia onto your system you need to run:
+                    <screen><command>sudo rake install</command></screen>Which produces the
+                    following:
+                    <programlisting><textobject><textdata fileref="listings/reia-install.txt"/></textobject></programlisting>Excellent!
+                    Now your ready to start coding with Reia!</para>
+            </sect1>
+        </chapter>
+    </part>
+</book>
