@@ -1,23 +1,38 @@
 require 'rake/clean'
+require 'expect'
+
+IRE_PROMPT = '>>'
 
 #define out common directories
-base = Dir.getwd
-listings = File.join(base,'listings')
-reia = File.join(base,'reia')
+BASE = Dir.getwd
+LISTINGS = File.join(BASE,'listings')
+REIA = File.join(BASE,'reia')
 
 #files to build
-clone = File.join(listings,'clone.txt')
-reia_dir = File.join(listings,'reia-dir.txt')
-reia_build = File.join(listings,'reia-build.txt')
-reia_install = File.join(listings,'reia-install.txt')
+clone = File.join(LISTINGS,'clone.txt')
+reia_dir = File.join(LISTINGS,'reia-dir.txt')
+reia_build = File.join(LISTINGS,'reia-build.txt')
+reia_system_install = File.join(LISTINGS,'reia-system-install.txt')
+reia_local_install = File.join(LISTINGS,'reia-local-install.txt')
+ire_init = File.join(LISTINGS,'ire-init.txt')
 
 CLEAN.include "reia"
 CLOBBER.include "listings/*"
 
-task :default => [:reia, :clone]
+task :default => [:reia, :clone, :examples]
 
 task :clone => clone
-task :reia => [reia_dir, reia_build, reia_install]
+task :reia => [reia_dir, reia_build, reia_local_install, reia_system_install]
+
+def output_file(src)
+  'listings/' + File.basename(src) + '.out'
+end
+
+
+EXAMPLES_SRC = FileList.new('examples/*.ire')
+EXAMPLES_OUT = EXAMPLES_SRC.to_a.collect { |f| output_file(f) }
+
+task :examples => EXAMPLES_OUT
 
 #simple minded method for splitting output, cannot handle files with spaces.
 def tee(command, *files)
@@ -26,11 +41,11 @@ def tee(command, *files)
   sh command
 end
 
-file "listings" do |f|
+directory "listings" do |f|
   Dir.mkdir f.name
 end
 
-file clone => "listings" do |f|
+file clone => 'listings' do |f|
   `rm -rf reia`
   tee "git clone https://github.com/tarcieri/reia.git", f.name
 end
@@ -45,7 +60,38 @@ file reia_build => :clone do |f|
   tee 'rake', f.name
 end
 
-file reia_install => reia_build do |f|
+file reia_local_install => reia_build do |f|
+  Dir.chdir reia
+  home = File.expand_path('~/')
+  ENV['REIA_BIN_DIR'] = File.join(home, ".reia", "bin")
+  libs = File.join(home,'.reia','lib')
+  sh "mkdir -p #{libs}"
+  ENV['ERL_LIB_DIR'] = libs
+  tee 'rake install', f.name
+end
+
+file reia_system_install => reia_build do |f|
   Dir.chdir reia
   tee 'sudo rake install', f.name
+end
+
+file ire_init do |f|
+  File.open(f.name, 'w') do |out|
+    @ire = IO.popen('ire 2>&1')
+    out << @ire.expect('>>').first
+  end
+end
+
+EXAMPLES_SRC.to_a.each do |ex|
+  file output_file(ex) => [ex, ire_init] do |f|
+    File.open(f.name, 'w') do |out|
+      File.open(ex, 'r') do |src|
+        out << IRE_PROMPT
+        @ire << src.gets
+        out << @ire.expect(IRE_PROMPT).first
+      end
+    end
+    
+    puts "#{f.name} => #{ex}"
+  end
 end

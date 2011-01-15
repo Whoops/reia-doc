@@ -9,7 +9,7 @@
         </author>
     </info>
     <part>
-        <title>Reference</title>
+        <title>Programming with Reia</title>
         <chapter>
             <title>Getting Started</title>
             <sect1>
@@ -55,13 +55,54 @@ Resolving deltas: 100% (5380/5380), done.</programlisting>Great!
                     test suite. A successful build will look like
                     so:<programlisting><textobject><textdata fileref="listings/reia-build.txt"/></textobject></programlisting>If
                     there are errors reported during the build you will probaby want to ask around
-                    on the Reia Google Group to find out what the problem is. Lastly, in order to
-                    install Reia onto your system you need to run:
-                    <screen><command>sudo rake install</command></screen>Which produces the
-                    following:
-                    <programlisting><textobject><textdata fileref="listings/reia-install.txt"/></textobject></programlisting>Excellent!
-                    Now your ready to start coding with Reia!</para>
-            </sect1>
+                    on the Reia Google Group to find out what the problem is.</para>
+                <para>Now you have two choices. You can either do a <link linkend="system_install"
+                        >system-wide installation</link>, or a <link linkend="local_install">local
+                    installation</link>.</para>
+                <sect2 xml:id="system_install"><title>System Install: The Easy Way</title><para>To do a regular system-wide install of Reia, you need to run the following (replacing sudo
+                        with whatever command your system uses to become root):
+                        <screen><command>sudo rake install</command></screen>Note that this will
+                        probably not work if you are using RVM. If you are using RVM, ensure that
+                        you have installed Ruby and Rake through your package manager, and run
+                        <screen><command>rvm use --system</command></screen>before attempting to run
+                        rake install. If everything goes well you should see the following::
+                        <programlisting><textobject><textdata fileref="listings/reia-system-install.txt"/></textobject></programlisting>Excellent!
+                    Now your ready to start coding with Reia! Procede to <link linkend="ch2">Chapter 2</link></para>
+                </sect2><sect2 xml:id="local_install">
+                    <title>Local Install: The Hard Way</title>
+                    <para>Doing a local installation of Reia is quite a bit more complex, but has
+                        the benifit of not requiring root priviledges, working well with RVM, and
+                        being somewhat simpler to manage. The first thing you'll need to do is make
+                        a directory inside your home directory to install Reia into. For our
+                        purposes lets use ~/.reia. First we need to make the directories where Reia
+                        should install
+                        itself:<screen><command>mkdir -p ~/.reia/bin</command>
+<command>mkdir -p ~/.reia/lib</command></screen>Then
+                        we need to set up our enviorment variables that tell Reia where to install
+                        itself:<screen><command>export REIA_BIN_DIR=~/.reia/bin # This is where Reia will place it's executables</command>
+<command>export ERL_LIB_DIR=~/.reia/lib # This is where Reia will place it's system libraries</command></screen>and
+                        finally you are ready to install.
+                        Run<screen><command>rake install</command></screen> and you should see
+                        something
+                        like:<programlisting><textobject><textdata fileref="listings/reia-local-install.txt"/></textobject></programlisting>Phew!
+                        Almost done! Last but not least you need to make some changes to you
+                        ~/.bashrc (if you're not using bash, you will need to modify these
+                        instructions for your shell). Add the following lines to your ~/.bashrc
+                        file:<programlisting>export PATH="$PATH:~/.reia/bin" # Adds the bin directory to your path
+export ERL_LIBS="/home/walton/.reia/lib/reia/" # Additional directory where the Erlang will look for libraries
+export REIA_HOME="/home/walton/.reia/lib/reia/" # Where Reia should look for it's core libraries</programlisting>Last but not least you need either start a new shell, or run <screen><command>source ~/.bashrc</command></screen> to pull your changes into the shell.
+                        There! If you've done everything correctly you should now be ready to move
+                        onto <link linkend="ch2">Chapter 2</link></para>
+                </sect2></sect1>
+        </chapter>
+        <chapter xml:id="ch2">
+            <title>The Basics</title>
+            <para>Well, the first thing to learn about Reia is IRE. For those of you who have used
+                Ruby or Python this should be very familiar teritorry, it's a simple REPL
+                (Read-Eval-Print-Loop) like IRB or the Python shell. For those of you who haven't
+                IRE is a shell where you can input a command of Reia code, and see the results
+                printed on the screen.  For example lets try the traditional Hello World program.
+                First run: <screen><command>ire</command></screen> to start the shell.  You should see something like:</para>
         </chapter>
     </part>
 </book>
