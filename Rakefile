@@ -1,7 +1,5 @@
 require 'rake/clean'
-require 'expect'
-
-IRE_PROMPT = '>>'
+require_relative('ire')
 
 #define out common directories
 BASE = Dir.getwd
@@ -75,20 +73,15 @@ file reia_system_install => reia_build do |f|
   tee 'sudo rake install', f.name
 end
 
-file ire_init do |f|
-  File.open(f.name, 'w') do |out|
-    @ire = IO.popen('ire 2>&1')
-    out << @ire.expect('>>').first
-  end
-end
-
 EXAMPLES_SRC.to_a.each do |ex|
   file output_file(ex) => [ex, ire_init] do |f|
     File.open(f.name, 'w') do |out|
       File.open(ex, 'r') do |src|
-        out << IRE_PROMPT
-        @ire << src.gets
-        out << @ire.expect(IRE_PROMPT).first
+        Ire.open do |ire|
+          src.each do |line|
+            out << ire.command(line.chomp)
+          end
+        end
       end
     end
     
